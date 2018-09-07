@@ -12,6 +12,7 @@ void setup() {
 void quicksort(float[] arr, int lo, int hi) {
   if (lo < hi) {
     int mid = partition(arr, lo, hi);
+    println("Mid: "+ mid);
     quicksort(arr, lo, mid-1);    
     quicksort(arr, mid+1, hi);
   }
@@ -35,6 +36,7 @@ void quicksort(float[] arr, int lo, int hi) {
 
 void mousePressed() {
   quicksort(values, 0, values.length-1);
+  redraw();
 }
 
 void draw() {
@@ -50,7 +52,7 @@ int partition(float[] arr, int lo, int hi) {
   int left = lo-1;
   int right = hi-1;
 
-  while (left <= right) {
+  while (left < right) {
     left++;
     println(left, right);
     if (arr[left] >= pivot) {
@@ -64,11 +66,11 @@ int partition(float[] arr, int lo, int hi) {
     }
   }
 
-  if (left < hi-1) {
+  if (arr[left] > arr[hi]) {
     swap(arr, left, hi);
+    return left;
   }
-  println("Mid: "+ left);
-  return left;
+  return hi;
 }
 
 
@@ -84,7 +86,4 @@ void swap(float[] arr, int a, int b) {
   float temp = arr[a];
   arr[a] = arr[b];
   arr[b] = temp;
-
-
-  redraw();
 }
