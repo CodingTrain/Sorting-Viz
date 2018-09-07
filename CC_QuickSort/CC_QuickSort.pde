@@ -35,8 +35,13 @@ void quicksort(float[] arr, int lo, int hi) {
 //}
 
 void mousePressed() {
-  quicksort(values, 0, values.length-1);
-  redraw();
+  new Thread( new Runnable()
+  {
+    public void run()
+    {
+      quicksort(values, 0, values.length-1);
+    }
+  }).start();
 }
 
 void draw() {
@@ -86,4 +91,10 @@ void swap(float[] arr, int a, int b) {
   float temp = arr[a];
   arr[a] = arr[b];
   arr[b] = temp;
+  redraw();
+  try
+  {
+    Thread.sleep(5);
+  } catch (InterruptedException e)
+  { }
 }
