@@ -9,6 +9,12 @@ void setup() {
   }
   noLoop();
 }
+
+void sortValues()
+{
+  quicksort(values, 0, values.length-1);
+}
+
 void quicksort(float[] arr, int lo, int hi) {
   if (lo < hi) {
     int mid = partition(arr, lo, hi);
@@ -35,13 +41,7 @@ void quicksort(float[] arr, int lo, int hi) {
 //}
 
 void mousePressed() {
-  new Thread( new Runnable()
-  {
-    public void run()
-    {
-      quicksort(values, 0, values.length-1);
-    }
-  }).start();
+  thread("sortValues");
 }
 
 void draw() {
@@ -92,9 +92,5 @@ void swap(float[] arr, int a, int b) {
   arr[a] = arr[b];
   arr[b] = temp;
   redraw();
-  try
-  {
-    Thread.sleep(5);
-  } catch (InterruptedException e)
-  { }
+  delay(5);
 }
