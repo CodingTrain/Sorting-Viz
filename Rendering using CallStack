@@ -1,0 +1,40 @@
+const length = 10000;
+let drawNumbers = [];
+let callStack = [{first: 0, last: length - 1}];
+
+function setup() {
+	createCanvas(1000, 500);
+	for(let i = 0; i < length; i++) {
+		drawNumbers[i] = random();
+	}
+}
+
+function draw() {
+	...
+  let call = callStack.pop();
+  if(call != null) {
+    Quicksort(drawNumbers, call.first, call.last);
+  }
+}
+
+function Quicksort(Numbers, first, last) {
+	let pivot = Numbers[last];
+	let pivotLocation = last;
+	for(let i = first; i < last + 1; i++) {
+		if(Numbers[i] > pivot && i < pivotLocation) {
+			Numbers.splice(last/*nicht + 1, weil vorher gespliced wird ->*/, 0, Numbers.splice(i, 1));
+			pivotLocation--;
+			i--;
+		}
+		if(Numbers[i] < pivot && i > pivotLocation) {
+			Numbers.splice(first, 0, Numbers.splice(i, 1));
+			pivotLocation++;
+		}
+	}
+	if(pivotLocation > first + 1) {
+		callStack.push({first: first, last: pivotLocation - 1});
+	}
+	if(pivotLocation < last - 1) {
+		callStack.push({first: pivotLocation + 1, last: last});
+	}
+}
