@@ -59,7 +59,7 @@ class Dancer {
   }
   
   void compare() {
-    wait = 30 * delay - 1;
+    wait = 30 * delay + 3;// - 1;
   }
   
   void moveTo(float newPos) {
@@ -103,7 +103,7 @@ class Dancer {
         if (done) {
           idle = true;
           if (addDelay)
-            wait = 54 * delay;
+            wait = 50 * delay;
         }
       }
     } else if (animMove > 0) {

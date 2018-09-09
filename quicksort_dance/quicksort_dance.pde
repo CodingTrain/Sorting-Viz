@@ -1,14 +1,19 @@
 import processing.sound.*;
-SoundFile song;
 
-int numDancers = 10;            // number of values, if 10 use the fixed values array
-boolean playMusic = true;
-int delay = 10;                 // realtime = 10
-int startdelay = 600;           // synctime = 600
-int enddelay = 0;               // keep 0
+// Variables that can be changed, the current values imitate the original quite accurately.
 
+int numDancers = 10;                                         // number of values, if 10 use the fixed values array
+boolean playMusic = true;                                    // much better with music ^^
+int speedup = 0;                                             // positive values: speedup, negative values: slowdown
+int startdelay = 600;                                        // 600 = 10 seconds delay in the start, lower for quicker quicksort action
+int[] values = new int[] { 3, 0, 1, 8, 7, 2, 5, 4, 9, 6 };   // The values from the original are 3, 0, 1, 8, 7, 2, 5, 4, 9, 6
+
+// sadly if (fullscreen) fullScreen(); else size(800, 600); doesn't work because they can't be used in the same sketch, even tho only one would be called
+
+// Don't change these!
 Dancer[] dancers = new Dancer[numDancers];
-int[] values = new int[] { 3, 0, 1, 8, 7, 2, 5, 4, 9, 6 };
+
+SoundFile song;
 
 int pivot = -1;
 int other = -1;
@@ -18,6 +23,9 @@ int hi = 0;
 
 ArrayList<Integer> lows = new ArrayList();
 ArrayList<Integer> highs = new ArrayList();
+
+int delay = 10 - speedup;
+int enddelay = 0;
 
 void setup() {
   //fullScreen();
@@ -39,6 +47,7 @@ void setup() {
   highs.add(numDancers - 1);
 }
 
+// test variable
 int count = 0;
 void draw() {
   background(53);
@@ -65,6 +74,8 @@ void draw() {
           dancers[i].idle = false;
           dancers[i].end = true;
         }
+        pivot = -1;
+        other = -1;
       }
     }
     if (pivot >= 0) {
