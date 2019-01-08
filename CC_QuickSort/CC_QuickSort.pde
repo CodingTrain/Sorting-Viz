@@ -1,4 +1,3 @@
-
 float[] values;
 
 void setup() {
@@ -9,12 +8,28 @@ void setup() {
   }
   noLoop();
 }
+
 void quicksort(float[] arr, int lo, int hi) {
-  if (lo < hi) {
-    int mid = partition(arr, lo, hi);
-    quicksort(arr, lo, mid-1);    
-    quicksort(arr, mid+1, hi);
+  if (hi - lo == 2) {
+    // Just two elements, we can swap manually
+    if (arr[lo] > arr[hi-1]) swap(arr, lo, hi-1);
+    return;
+  } if (hi - lo < 2) {
+    // Single elements
+    return;
   }
+  
+  int mid = partition(arr, lo, hi);
+  quicksort(arr, lo, mid);    
+  quicksort(arr, mid+1, hi);
+}
+
+void mousePressed() {
+  quicksort(values, 0, values.length);
+}
+
+void draw() {
+  render();
 }
 
 // Working partition code from:
@@ -33,43 +48,23 @@ void quicksort(float[] arr, int lo, int hi) {
 //  return (i + 1);
 //}
 
-void mousePressed() {
-  quicksort(values, 0, values.length-1);
-}
+// I have slightly changed "hi", instead making it refer to after the last element
+// This makes the code simpler
 
-void draw() {
-  render();
-  println("Help");
-}
-
-// Broken partition code that I tried to write
-// TODO: Help!
 int partition(float[] arr, int lo, int hi) {
-  //println("Partition " + lo + " to " + hi);
-  float pivot = arr[hi];
-  int left = lo-1;
-  int right = hi-1;
-
-  while (left <= right) {
-    left++;
-    println(left, right);
-    if (arr[left] >= pivot) {
-      while (right > left) {
-        if (arr[right] < pivot) {
-          swap(arr, left, right);
-          break;
-        }
-        right--;
-      }
+  float pivot = arr[hi-1];
+  
+  int i = lo-1;
+  for (int j = lo; j < hi-1; j++) {
+    if (arr[j] <= pivot) {
+      swap(arr, ++i, j);
     }
   }
-
-  if (left < hi-1) {
-    swap(arr, left, hi);
-  }
-  println("Mid: "+ left);
-  return left;
+  
+  swap(arr, ++i, hi-1);
+  return i;
 }
+
 
 
 void render() {
@@ -84,7 +79,6 @@ void swap(float[] arr, int a, int b) {
   float temp = arr[a];
   arr[a] = arr[b];
   arr[b] = temp;
-
 
   redraw();
 }
