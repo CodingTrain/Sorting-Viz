@@ -1,4 +1,12 @@
+import java.util.ArrayDeque;
+
 float[] values;
+
+// To animate the algorithm
+// I implemented the recursive quicksort on my own stack
+// I can run through the stack as I please
+// So I pop the stack each frame and process one per frame
+ArrayDeque<int[]> qs_stack;
 
 void setup() {
   size(600, 400);
@@ -6,79 +14,94 @@ void setup() {
   for (int i = 0; i < values.length; i++) {
     values[i] = random(height);
   }
-  noLoop();
-}
-
-void quicksort(float[] arr, int lo, int hi) {
-  if (hi - lo == 2) {
-    // Just two elements, we can swap manually
-    if (arr[lo] > arr[hi-1]) swap(arr, lo, hi-1);
-    return;
-  } if (hi - lo < 2) {
-    // Single elements
-    return;
-  }
   
-  int mid = partition(arr, lo, hi);
-  quicksort(arr, lo, mid);    
-  quicksort(arr, mid+1, hi);
+  // Create stack
+  qs_stack = new ArrayDeque<int[]>();
+  
+  // Initial call of quicksort
+  int[] params = {0, values.length};
+  qs_stack.addFirst(params);
 }
-
-void mousePressed() {
-  quicksort(values, 0, values.length);
-}
-
-void draw() {
-  render();
-}
-
-// Working partition code from:
-// https://www.geeksforgeeks.org/quick-sort/
-
-//int partition (float arr[], int low, int high) {
-//  float pivot = arr[high];  
-//  int i = (low - 1);  
-//  for (int j = low; j <= high- 1; j++) {
-//    if (arr[j] <= pivot) {
-//      i++;
-//      swap(arr, i, j);
-//    }
-//  }
-//  swap(arr, i+1, high);
-//  return (i + 1);
-//}
 
 // I have slightly changed "hi", instead making it refer to after the last element
 // This makes the code simpler
 
-int partition(float[] arr, int lo, int hi) {
-  float pivot = arr[hi-1];
+int partition(int lo, int hi) {
+  float pivot = values[hi-1];
   
   int i = lo-1;
   for (int j = lo; j < hi-1; j++) {
-    if (arr[j] <= pivot) {
-      swap(arr, ++i, j);
+    if (values[j] <= pivot) {
+      swap(++i, j);
     }
   }
   
-  swap(arr, ++i, hi-1);
+  swap(++i, hi-1);
   return i;
 }
 
+void draw() {
+  // Pop!
+  int[] qs_params = qs_stack.pollFirst();
 
+  if (qs_params != null) {
+    
+    if (qs_params[0] < qs_params[1]) {
+      // Partition the array
+      int mid = partition(qs_params[0], qs_params[1]);
+    
+      // The parameters for the next calls
+      int[] left  = {qs_params[0], mid};
+      int[] right = {mid+1, qs_params[1]};
+      
+      // Push to the stack!
+      qs_stack.addFirst(right);
+      qs_stack.addFirst(left);
+      
 
-void render() {
-  background(0);
-  for (int i = 0; i < values.length; i++) {
-    stroke(255);
-    line(i, height, i, height - values[i]);
+      // Animate!
+      background(0);
+  
+      // Sorted elements, green
+      stroke(0, 255, 0);
+      for (int i = 0; i < qs_params[0]; i++) {
+        line(i, height, i, height - values[i]);
+      }
+      
+      // To sort - left side, red
+      stroke(255, 0, 0);
+      for (int i = qs_params[0]; i < mid; i++) {
+        line(i, height, i, height - values[i]);
+      }
+      
+      // Pivot point, red
+      stroke(0, 0, 255);
+      line(mid, height, mid, height - values[mid]);
+      
+      // To sort - right side, red
+      stroke(255, 0, 0);
+      for (int i = mid + 1; i < qs_params[1]; i++) {
+        line(i, height, i, height - values[i]);
+      }
+      
+      // The rest of the elements, white
+      stroke(255);
+      for (int i = qs_params[1]; i < values.length; i++) {
+        line(i, height, i, height - values[i]);
+      }
+    }
+  } else {
+
+    // If the stack is empty, we have finished the sort
+    // Lets start again!
+    setup();
   }
 }
 
-void swap(float[] arr, int a, int b) {
-  float temp = arr[a];
-  arr[a] = arr[b];
-  arr[b] = temp;
+void swap(int a, int b) {
+  float temp = values[a];
+  values[a] = values[b];
+  values[b] = temp;
 
   redraw();
 }
