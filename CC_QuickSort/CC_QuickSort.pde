@@ -48,27 +48,24 @@ int partition(float[] arr, int lo, int hi) {
   //println("Partition " + lo + " to " + hi);
   float pivot = arr[hi];
   int left = lo-1;
-  int right = hi-1;
+  int right = lo;
 
-  while (left <= right) {
-    left++;
+  while (right <= hi-1) {
     println(left, right);
-    if (arr[left] >= pivot) {
-      while (right > left) {
-        if (arr[right] < pivot) {
-          swap(arr, left, right);
-          break;
-        }
-        right--;
+    if (arr[right] <= pivot) {
+      left++;
+      if(arr[left] != arr[right]){
+        swap(arr, left, right);
+        break;
       }
     }
+    right++;
   }
 
-  if (left < hi-1) {
-    swap(arr, left, hi);
-  }
+  swap(arr, left+1, right);
+  
   println("Mid: "+ left);
-  return left;
+  return left+1;
 }
 
 
@@ -84,7 +81,7 @@ void swap(float[] arr, int a, int b) {
   float temp = arr[a];
   arr[a] = arr[b];
   arr[b] = temp;
-
-
+  
+  
   redraw();
 }
